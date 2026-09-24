@@ -3,14 +3,13 @@ import {getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged} from "
 import {getFirestore, collection, addDoc, getDocs, deleteDoc, doc} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
             const firebaseConfig = {
-                apiKey: "AIzaSyByT1p4VdkJ9L0a10ikck2yNpOZWbJzjio",
-                authDomain: "inspection-app-da5a0.firebaseapp.com",
-                databaseURL: "https://inspection-app-da5a0-default-rtdb.firebaseio.com",
-                projectId: "inspection-app-da5a0",
-                storageBucket: "inspection-app-da5a0.firebasestorage.app",
-                messagingSenderId: "616067736556",
-                appId: "1:616067736556:web:7e5146f51ea248ded896c9",
-                measurementId: "G-9RM0BL050Y"
+              apiKey: "AIzaSyAdjD2FiCU-uP5eo8JuKyP_Gc_QNGpAPK8",
+              authDomain: "inspection-data-11f7d.firebaseapp.com",
+              projectId: "inspection-data-11f7d",
+              storageBucket: "inspection-data-11f7d.firebasestorage.app",
+              messagingSenderId: "1082215196163",
+              appId: "1:1082215196163:web:fdaa360881782ea3ad1036",
+              measurementId: "G-KBV92YDP1K"
             };
 
             const app = initializeApp(firebaseConfig);
