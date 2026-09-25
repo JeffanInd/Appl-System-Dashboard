@@ -6533,7 +6533,7 @@ import {getFirestore, collection, addDoc, getDocs, deleteDoc, doc} from "https:/
             // HAK AKSES INPUT DATA
             // ===============================
             const allowedInputUsers = [
-                "admin"
+                "admin","gumilang","nono"
             ];
             // ===============================
             // LOGIN & LOGUT DATA
