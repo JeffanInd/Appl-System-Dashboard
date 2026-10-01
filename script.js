@@ -72,7 +72,7 @@ import {getFirestore, collection, addDoc, getDocs, deleteDoc, doc} from "https:/
                 document.getElementById(sectionId).style.display = "block";
             }
 
-            document.getElementById("poPrintBtn").addEventListener("click", () => {
+            document.getElementById("purchaseOrder").addEventListener("click", () => {
                 window.location.href = "https://jeffanind.github.io/Purchase-Order";
             });
 
