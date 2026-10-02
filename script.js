@@ -1,15 +1,15 @@
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import {getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import {getFirestore, collection, addDoc, getDocs, deleteDoc, doc} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+            import {getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+            import {getFirestore, collection, addDoc, getDocs, deleteDoc, doc} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
             const firebaseConfig = {
-              apiKey: "AIzaSyAdjD2FiCU-uP5eo8JuKyP_Gc_QNGpAPK8",
-              authDomain: "inspection-data-11f7d.firebaseapp.com",
-              projectId: "inspection-data-11f7d",
-              storageBucket: "inspection-data-11f7d.firebasestorage.app",
-              messagingSenderId: "1082215196163",
-              appId: "1:1082215196163:web:fdaa360881782ea3ad1036",
-              measurementId: "G-KBV92YDP1K"
+                apiKey: "AIzaSyAdjD2FiCU-uP5eo8JuKyP_Gc_QNGpAPK8",
+                authDomain: "inspection-data-11f7d.firebaseapp.com",
+                projectId: "inspection-data-11f7d",
+                storageBucket: "inspection-data-11f7d.firebasestorage.app",
+                messagingSenderId: "1082215196163",
+                appId: "1:1082215196163:web:fdaa360881782ea3ad1036",
+                measurementId: "G-KBV92YDP1K"
             };
 
             const app = initializeApp(firebaseConfig);
@@ -108,40 +108,40 @@ import {getFirestore, collection, addDoc, getDocs, deleteDoc, doc} from "https:/
                 updateClock();
             });
 
-            /* ================= MASTER DATA PO ================= */
-            const dataByKode = {
-                "CG2603-01": {
-                    Vendor: "V68 PT. Furnilac Primaguna",
-                    ecrd: "2026-5-25",
-                    items: [
-                        {
-                            item: "NS-68406-BKV",
-                            qty: 15,
-                            desc: "2 Drawer + 1 Shelf Nightstand, Matte Black Wood Veneer (22x15x24)   Material: Bayur Wood and MDF  Thin Medium Density Fiberboard - Phase 2   Antique Gold Oval Handle: OV-185/E   CBM: 0.21775   Packaging: Brown Carton",
-                            image: "https://6694454.app.netsuite.com/c.6694454/item-images/NS-68406-BKV_001.jpg"
-                        },
-                        {
-                            item: "NS-68406-BRV",
-                            qty: 15,
-                            desc: "2 Drawer + 1 Shelf Nightstand, Walnut Color Code DSC 6403 (22x15x24)   Material: Bayur Wood and MDF  Thin Medium Density Fiberboard - Phase 2   Antique Gold Oval Handle: OV-185/E   CBM: 0.21775   Packaging: Brown Carton",
-                            image: "https://6694454.app.netsuite.com/c.6694454/item-images/NS-68406-BRV_001.jpg"
-                        },
-                        {
-                            item: "ST-68DR16-WN",
-                            qty: 20,
-                            desc: "16 Inch Cinched Wood Drum Table, Walnut (16x16x23.5) // Material: Wood, MDF // CBM: 0.1725 // Packaging: Inch Drop ship packaging Inch required 5 ply outer craft 200 Styrofoam 3 cm",
-                            image: "https://6694454.app.netsuite.com/c.6694454/item-images/ST-68DR16-WN_001.jpg"
-                        },
-                        {
-                            item: "TT-VC-AD301-BK",
-                            qty: 25,
-                            desc: "Auburn Traditional One Drawer Wooden Accent Side Table (17.0x14.9x23.4)   //  Material: MDF  //  CBM: 0.1687  //  Packaging: Brown carton 5 ply outer craft 200 Styrofoam 3 cm  //  Master Carton:   //  ***Crafted Home Inch s Auburn Traditional One Drawer Wooden Accent Side Table-Black (17x15x23) Material/Color:Bayur Wood and Mdf E2/Black..CBM:0.17 Packing:Box K#200+Styrofoam 3cm Protection (1pc/case)***  //    KD",
-                            image: "https://6694454.app.netsuite.com/c.6694454/item-images/TT-VC-AD301-BK_001.jpg"
-                        }
-                    ]
-                }
+            /* ================= MASTER DATA PO DARI FIREBASE =================
+             * Sumber PO: collection Firestore "purchaseOrders"
+             * Struktur yang digunakan: po, Vendor/vendor, ecrd/ECRD, items[]
+             */
+            let dataByKode = {};
 
-            };
+            async function loadMasterPOFromFirebase() {
+                try {
+                    const snapshot = await getDocs(collection(db, "purchaseOrders"));
+                    const firebaseData = {};
+
+                    snapshot.forEach(docSnap => {
+                        const d = docSnap.data() || {};
+                        const po = String(d.po || docSnap.id || "").trim();
+                        if (!po) return;
+
+                        firebaseData[po] = {
+                            Vendor: d.Vendor || d.vendor || "",
+                            ecrd: d.ecrd || d.ECRD || "",
+                            items: Array.isArray(d.items) ? d.items : []
+                        };
+                    });
+
+                    dataByKode = firebaseData;
+                    console.log(`Master PO berhasil dimuat dari Firebase: ${Object.keys(dataByKode).length} PO`);
+                } catch (error) {
+                    console.error("Gagal membaca Master PO dari Firebase:", error);
+                    dataByKode = {};
+                    alert("Master PO gagal dimuat dari Firebase. Silakan cek koneksi dan Firebase Rules.");
+                }
+            }
+
+            // Pastikan Master PO selesai dimuat sebelum Step 1 dan menu Purchase Order digunakan.
+            await loadMasterPOFromFirebase();
 
             const guideTexts = {
                 guideInput: `
@@ -568,7 +568,7 @@ import {getFirestore, collection, addDoc, getDocs, deleteDoc, doc} from "https:/
             window.goToStep2 = function (headerPo, itemCode) {
                 const header = headers.find(h => h.po === headerPo);
                 if (!header) return alert("Data header tidak ditemukan!");
-                const item = dataByKode[headerPo].items.find(i => i.item === itemCode);
+                const item = (header.items || []).find(i => i.item === itemCode);
                 if (!item) return alert("Data item tidak ditemukan!");
 
                 document.getElementById("step1").style.display = "none";
@@ -990,8 +990,8 @@ import {getFirestore, collection, addDoc, getDocs, deleteDoc, doc} from "https:/
             // ===============================
             function generatePOSelect() {
 
-                if (!dataByKode) {
-                    console.warn("dataByKode belum tersedia");
+                if (Object.keys(dataByKode).length === 0) {
+                    console.warn("Master PO Firebase belum tersedia atau kosong");
                     return;
                 }
 
@@ -1518,7 +1518,7 @@ import {getFirestore, collection, addDoc, getDocs, deleteDoc, doc} from "https:/
             // HAK AKSES INPUT DATA
             // ===============================
             const allowedInputUsers = [
-                "admin","gumilang","nono"
+                "admin", "gumilang", "nono"
             ];
             // ===============================
             // LOGIN & LOGUT DATA
