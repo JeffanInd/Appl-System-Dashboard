@@ -1716,3 +1716,54 @@ import {initializeApp} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-
                     sessionStorage.removeItem("welcomeShown");
                 }
             });
+/* MENU SIDEBAR ANDROID */
+document.addEventListener("DOMContentLoaded", function () {
+    const menuBtn = document.getElementById("mobileMenuBtn");
+    const overlay = document.getElementById("mobileMenuOverlay");
+    const sidebar = document.querySelector(".sidebar");
+
+    if (!menuBtn || !overlay || !sidebar) {
+        console.warn("Elemen menu Android tidak ditemukan.");
+        return;
+    }
+
+    function openMenu() {
+        sidebar.classList.add("show");
+        overlay.style.display = "block";
+        menuBtn.setAttribute("aria-expanded", "true");
+        menuBtn.innerHTML = "✕";
+        menuBtn.setAttribute("aria-label", "Tutup menu");
+    }
+
+    function closeMenu() {
+        sidebar.classList.remove("show");
+        overlay.style.display = "none";
+        menuBtn.setAttribute("aria-expanded", "false");
+        menuBtn.innerHTML = "☰";
+        menuBtn.setAttribute("aria-label", "Buka menu");
+    }
+
+    menuBtn.addEventListener("click", function () {
+        if (sidebar.classList.contains("show")) {
+            closeMenu();
+        } else {
+            openMenu();
+        }
+    });
+
+    overlay.addEventListener("click", closeMenu);
+
+    sidebar.querySelectorAll("li").forEach(function (item) {
+        item.addEventListener("click", function () {
+            if (window.innerWidth <= 768) {
+                closeMenu();
+            }
+        });
+    });
+
+    window.addEventListener("resize", function () {
+        if (window.innerWidth > 768) {
+            closeMenu();
+        }
+    });
+});
