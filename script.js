@@ -1669,3 +1669,50 @@ import {initializeApp} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-
                 const email = document.getElementById("email").value.trim();
                 const password = document.getElementById("password").value.trim();
                 if (!email || !password) return alert("Email dan password wajib diisi");
+
+                signInWithEmailAndPassword(auth, email, password)
+                    .then(() => {
+                        document.getElementById("loginPage").style.display = "none";
+                        document.getElementById("dashboardPage").style.display = "flex";
+                        showSection("dashboard");
+                    })
+                    .catch(err => alert(err.message));
+            };
+
+            window.logout = () => signOut(auth).then(() => location.reload());
+
+            // ===============================
+            // SHOW USER ID IN DASHBOARD
+            // ===============================
+            onAuthStateChanged(auth, user => {
+                if (user) {
+                    // Periksa role terpisah untuk menentukan akses upload Dashboard.
+                    refreshDashboardAdminAccess(user);
+                    // Update User ID
+                    const username = (user.email || user.uid).split("@")[0];
+                    document.getElementById("user-id-display").innerText = "User ID : " + username;
+
+                    document.getElementById("loginPage").style.display = "none";
+                    document.getElementById("dashboardPage").style.display = "flex";
+                    showSection("dashboard");
+
+                    // ✅ Tampilkan welcome overlay HANYA saat login baru
+                    if (!sessionStorage.getItem("welcomeShown")) {
+                        showWelcomeOverlay(user);
+                        sessionStorage.setItem("welcomeShown", "true");
+                    }
+
+                } else {
+                    isDashboardAdmin = false;
+                    const uploadButton = document.getElementById("dashboardUploadTabButton");
+                    if (uploadButton) uploadButton.style.display = "none";
+                    document.getElementById("loginPage").style.display = "flex";
+                    document.getElementById("dashboardPage").style.display = "none";
+
+                    // Reset User ID
+                    document.getElementById("user-id-display").innerText = "User ID : -";
+
+                    // Reset overlay flag
+                    sessionStorage.removeItem("welcomeShown");
+                }
+            });
