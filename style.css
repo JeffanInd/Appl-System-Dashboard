@@ -1394,3 +1394,47 @@ button,
         transition-duration: 0.01ms !important;
     }
 }
+/* TOMBOL MENU ANDROID */
+#mobileMenuBtn {
+    display: none;
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    width: 46px;
+    height: 46px;
+    border: none;
+    border-radius: 10px;
+    background: #1e40af;
+    color: white;
+    font-size: 25px;
+    cursor: pointer;
+    z-index: 1003;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+#mobileMenuOverlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 1000;
+}
+
+@media (max-width: 768px) {
+    #mobileMenuBtn {
+        display: flex;
+    }
+
+    .main {
+        padding-top: 65px;
+    }
+}
+
+@media (min-width: 769px) {
+    #mobileMenuBtn,
+    #mobileMenuOverlay {
+        display: none !important;
+    }
+}
