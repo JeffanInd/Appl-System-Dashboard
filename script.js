@@ -18,6 +18,13 @@ import {initializeApp} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-
 
             window.toggleMenu = () => document.getElementById("sidebar").classList.toggle("show");
 
+            window.showQualityGuideTab = (tabId) => {
+                const panels = document.querySelectorAll("#qualityGuide .quality-guide-panel");
+                panels.forEach(panel => {
+                    panel.style.display = panel.id === tabId ? "block" : "none";
+                });
+            };
+
             window.showSection = (id) => {
                 // ===============================
                 // 🔐 VALIDASI AKSES STEP1
@@ -36,6 +43,10 @@ import {initializeApp} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-
                 document.querySelectorAll("main section, .step1-container").forEach(sec => sec.style.display = "none");
                 const el = document.getElementById(id);
                 if (el) el.style.display = "block";
+
+                if (id === "qualityGuide") {
+                    showQualityGuideTab("aqlSection");
+                }
 
                 // ===============================
                 // RUNNING TEXT CONTROL
@@ -78,6 +89,9 @@ import {initializeApp} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-
 
             document.getElementById('galleryMenu').addEventListener('click', function () {
                 window.location.href = "https://jeffanind.github.io/Gallery-Item-Product";
+            });
+            document.getElementById('shipmentMenu').addEventListener('click', function () {
+                window.location.href = "https://jeffanind.github.io/Shipping-Dashboard";
             });
 
             //-- FUNCTION CLOCK UPDATE -->
@@ -977,6 +991,7 @@ import {initializeApp} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-
             setupImageZoom('#step2-result'); // Step 2
             setupImageZoom('#inventoryTable'); // Inventory
 
+
             // ===============================
             // ELEMENT PURCHASE ORDER
             // ===============================
@@ -985,52 +1000,52 @@ import {initializeApp} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-
             const poTableBody = document.getElementById("poTableBody");
             const backToMenuBtnPurchaseOrder =
                 document.getElementById("backToMenuBtnPurchaseOrder");
-            
+
             // ===============================
             // GENERATE SELECT PO DARI MASTER FIREBASE
             // ===============================
             function generatePOSelect() {
                 kodeSelector1.innerHTML =
                     '<option value="">-- Select PO --</option>';
-            
+
                 const poList = Object.keys(dataByKode).sort(
-                    (a, b) => a.localeCompare(b, undefined, { numeric: true })
+                    (a, b) => a.localeCompare(b, undefined, {numeric: true})
                 );
-            
+
                 poList.forEach(po => {
                     const option = document.createElement("option");
                     option.value = po;
                     option.textContent = po;
                     kodeSelector1.appendChild(option);
                 });
-            
+
                 console.log(
                     `Select PO berhasil dimuat: ${poList.length} PO`
                 );
             }
-            
+
             // ===============================
             // DISPLAY DATA PO
             // ===============================
             function tampilkanData(kode = "") {
                 poTableBody.innerHTML = "";
-            
+
                 const selectedPO = kode || kodeSelector1.value;
                 if (!selectedPO) return;
-            
+
                 const poData = dataByKode[selectedPO];
                 if (!poData) {
                     console.warn("Detail PO tidak ditemukan:", selectedPO);
                     return;
                 }
-            
+
                 const items = Array.isArray(poData.items)
                     ? poData.items
                     : [];
-            
+
                 items.forEach(item => {
                     const tr = document.createElement("tr");
-            
+
                     const values = [
                         poData.Vendor || "",
                         selectedPO,
@@ -1039,13 +1054,13 @@ import {initializeApp} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-
                         item.desc || "",
                         poData.ecrd || ""
                     ];
-            
+
                     values.forEach(value => {
                         const td = document.createElement("td");
                         td.textContent = value;
                         tr.appendChild(td);
                     });
-            
+
                     const imageCell = document.createElement("td");
                     if (item.image) {
                         const img = document.createElement("img");
@@ -1055,11 +1070,11 @@ import {initializeApp} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-
                         imageCell.appendChild(img);
                     }
                     tr.appendChild(imageCell);
-            
+
                     poTableBody.appendChild(tr);
                 });
             }
-            
+
             // ===============================
             // EVENT SELECT PO
             // ===============================
@@ -1067,70 +1082,70 @@ import {initializeApp} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-
                 searchInput.value = "";
                 tampilkanData();
             });
-            
+
             // ===============================
             // SEARCH MANUAL PO
             // ===============================
             function cariManual() {
                 const input = searchInput.value.trim().toLowerCase();
-            
+
                 if (!input) {
                     kodeSelector1.value = "";
                     poTableBody.innerHTML = "";
                     return;
                 }
-            
+
                 const poList = Object.keys(dataByKode);
-            
+
                 // Cari PO yang cocok secara tepat terlebih dahulu
                 let foundPO = poList.find(
                     po => po.toLowerCase() === input
                 );
-            
+
                 // Jika tidak ada, cari PO yang mengandung teks input
                 if (!foundPO) {
                     foundPO = poList.find(
                         po => po.toLowerCase().includes(input)
                     );
                 }
-            
+
                 if (!foundPO) {
                     kodeSelector1.value = "";
                     poTableBody.innerHTML = "";
                     console.log("PO tidak ditemukan:", input);
                     return;
                 }
-            
+
                 kodeSelector1.value = foundPO;
                 tampilkanData(foundPO);
             }
-            
+
             // ===============================
             // NEXT PO
             // ===============================
             function nextPO() {
                 const index = kodeSelector1.selectedIndex;
-            
+
                 if (index < kodeSelector1.options.length - 1) {
                     kodeSelector1.selectedIndex = index + 1;
                     searchInput.value = "";
                     tampilkanData();
                 }
             }
-            
+
             // ===============================
             // PREVIOUS PO
             // ===============================
             function previousPO() {
                 const index = kodeSelector1.selectedIndex;
-            
+
                 if (index > 1) {
                     kodeSelector1.selectedIndex = index - 1;
                     searchInput.value = "";
                     tampilkanData();
                 }
             }
-            
+
             // ===============================
             // RESET PO MENU
             // ===============================
@@ -1139,12 +1154,12 @@ import {initializeApp} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-
                 searchInput.value = "";
                 poTableBody.innerHTML = "";
             }
-            
+
             // ===============================
             // INIT
             // ===============================
             generatePOSelect();
-            
+
             backToMenuBtnPurchaseOrder.addEventListener(
                 "click",
                 () => {
@@ -1152,6 +1167,7 @@ import {initializeApp} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-
                     showSection("dashboard");
                 }
             );
+
             // ===============================
             // IMAGE ZOOM MODAL
             // ===============================
@@ -1195,6 +1211,7 @@ import {initializeApp} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-
                 imageModal.style.display = "none";
                 modalImage.src = "";
             });
+
             // ===============================
             // GLOBAL
             // ===============================
