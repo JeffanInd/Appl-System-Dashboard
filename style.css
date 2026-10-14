@@ -1,6 +1,6 @@
 /* ===============================
         GLOBAL
-  =================================*/
+        =================================*/
             * {
                 box-sizing: border-box;
             }
@@ -16,9 +16,9 @@
                 background: #f4f6f9;
             }
 
-  /* ===============================
+            /* ===============================
         LOGIN PAGE
-  =================================*/
+        =================================*/
             #loginPage {
                 display: none;
                 /* default hidden */
@@ -830,4 +830,48 @@
             .kpi-icon {
                 font-size: 20px;
                 margin-bottom: 6px;
+            }
+
+
+            /* ===============================
+               QUALITY & GUIDE SUBMENU
+            =================================*/
+            .quality-guide-tabs {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                margin: 12px 0 18px;
+            }
+
+            .quality-guide-tabs button {
+                padding: 10px 16px;
+                border: none;
+                border-radius: 9px;
+                color: #fff;
+                background: linear-gradient(135deg, #2563eb, #1e40af);
+                font-family: inherit;
+                font-weight: 600;
+                cursor: pointer;
+                transition: 0.2s ease;
+            }
+
+            .quality-guide-tabs button:hover {
+                background: #239709;
+                transform: translateY(-1px);
+            }
+
+            .quality-guide-panel {
+                width: 100%;
+                max-width: 100%;
+                margin: 0;
+                padding: 0;
+                border: 0;
+                border-radius: 0;
+                background: transparent;
+                box-shadow: none;
+            }
+
+            .quality-guide-panel h2,
+            .quality-guide-panel h3 {
+                margin-top: 8px;
             }
