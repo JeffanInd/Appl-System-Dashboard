@@ -34,7 +34,16 @@ import {initializeApp} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-
                 return isDashboardAdmin;
             }
 
-            window.toggleMenu = () => document.getElementById("sidebar").classList.toggle("show");
+            window.toggleMenu = () => {
+                const sidebar = document.getElementById("sidebar");
+                const overlay = document.getElementById("sidebarOverlay");
+                const toggleButton = document.querySelector(".mobile-menu-toggle");
+                if (!sidebar) return;
+                const isOpen = sidebar.classList.toggle("show");
+                if (overlay) overlay.classList.toggle("show", isOpen);
+                if (toggleButton) toggleButton.setAttribute("aria-expanded", String(isOpen));
+                document.body.style.overflow = isOpen && window.matchMedia("(max-width: 768px)").matches ? "hidden" : "";
+            };
 
             window.showQualityGuideTab = (tabId) => {
                 if (tabId === "dashboardUploadPanel" && !isDashboardAdmin) {
@@ -65,6 +74,16 @@ import {initializeApp} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-
                 document.querySelectorAll("main section, .step1-container").forEach(sec => sec.style.display = "none");
                 const el = document.getElementById(id);
                 if (el) el.style.display = "block";
+
+                if (window.matchMedia("(max-width: 768px)").matches) {
+                    const sidebar = document.getElementById("sidebar");
+                    const overlay = document.getElementById("sidebarOverlay");
+                    const toggleButton = document.querySelector(".mobile-menu-toggle");
+                    if (sidebar) sidebar.classList.remove("show");
+                    if (overlay) overlay.classList.remove("show");
+                    if (toggleButton) toggleButton.setAttribute("aria-expanded", "false");
+                    document.body.style.overflow = "";
+                }
 
                 if (id === "qualityGuide") {
                     showQualityGuideTab("aqlSection");
@@ -1368,8 +1387,8 @@ import {initializeApp} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-
                         inspectionValueUSD: dashboardNumber(d.inspectionValueUSD),
                         approvedInspection: dashboardNumber(d.approvedInspection)
                     };
-                // month = 0 diperbolehkan untuk total historis tahunan (mis. 2024/2025).
-                // Bulan 1–12 tetap digunakan untuk data bulanan tahun berjalan.
+                    // month = 0 diperbolehkan untuk total historis tahunan (mis. 2024/2025).
+                    // Bulan 1–12 tetap digunakan untuk data bulanan tahun berjalan.
                 }).filter(d => d.year >= 2000 && d.month >= 0 && d.month <= 12);
             }
 
@@ -1426,10 +1445,10 @@ import {initializeApp} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-
                     if (statusEl) statusEl.textContent = "Memeriksa file Excel...";
                     try {
                         const buffer = await file.arrayBuffer();
-                        const workbook = window.XLSX.read(buffer, { type: "array", cellDates: false });
+                        const workbook = window.XLSX.read(buffer, {type: "array", cellDates: false});
                         const sheet = workbook.Sheets["DashboardData"];
                         if (!sheet) throw new Error('Sheet "DashboardData" tidak ditemukan. Gunakan template Excel Dashboard.');
-                        const rawRows = window.XLSX.utils.sheet_to_json(sheet, { defval: null, raw: true });
+                        const rawRows = window.XLSX.utils.sheet_to_json(sheet, {defval: null, raw: true});
                         const required = ["year", "month", "sales", "qtySales", "totalPO", "inspectionValueUSD", "approvedInspection"];
                         if (!rawRows.length) throw new Error("Sheet DashboardData belum berisi baris data.");
                         const headers = Object.keys(rawRows[0]);
@@ -1447,7 +1466,7 @@ import {initializeApp} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-
                             const month = n("month");
                             if (!Number.isInteger(year) || year < 2000 || year > 2100) throw new Error(`Baris ${index + 2}: tahun harus berupa angka 2000–2100.`);
                             if (!Number.isInteger(month) || month < 0 || month > 12) throw new Error(`Baris ${index + 2}: bulan harus angka 0–12. Gunakan 0 untuk total historis tahunan.`);
-                            return { year, month, sales:n("sales"), qtySales:n("qtySales"), totalPO:n("totalPO"), inspectionValueUSD:n("inspectionValueUSD"), approvedInspection:n("approvedInspection") };
+                            return {year, month, sales: n("sales"), qtySales: n("qtySales"), totalPO: n("totalPO"), inspectionValueUSD: n("inspectionValueUSD"), approvedInspection: n("approvedInspection")};
                         });
                         const keys = parsed.map(r => `${r.year}-${String(r.month).padStart(2, "0")}`);
                         if (new Set(keys).size !== keys.length) throw new Error("Ada tahun dan bulan yang duplikat. Pastikan hanya satu baris untuk setiap bulan dalam setiap tahun.");
@@ -1458,10 +1477,10 @@ import {initializeApp} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-
                         if (statusEl) statusEl.textContent = "Mengganti data Dashboard di Firebase...";
                         const existing = await getDocs(collection(db, "dashboardData"));
                         const operations = [];
-                        existing.docs.forEach(d => operations.push({ type: "delete", ref: d.ref }));
+                        existing.docs.forEach(d => operations.push({type: "delete", ref: d.ref}));
                         parsed.forEach(row => {
                             const id = `${row.year}-${String(row.month).padStart(2, "0")}`;
-                            operations.push({ type: "set", ref: doc(db, "dashboardData", id), data: row });
+                            operations.push({type: "set", ref: doc(db, "dashboardData", id), data: row});
                         });
                         // Batas aman batch Firestore; proses per 400 operasi.
                         for (let i = 0; i < operations.length; i += 400) {
@@ -1496,7 +1515,7 @@ import {initializeApp} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-
 
             function destroyDashboardCharts() {
                 [salesBarChart, salesPieChart, salesLineChart, poBarChart, window.salesBarChartInstance]
-                    .forEach(chart => { if (chart && typeof chart.destroy === 'function') chart.destroy(); });
+                    .forEach(chart => {if (chart && typeof chart.destroy === 'function') chart.destroy();});
                 salesBarChart = salesPieChart = salesLineChart = poBarChart = null;
                 window.salesBarChartInstance = null;
             }
@@ -1518,7 +1537,7 @@ import {initializeApp} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-
                     const year = Number(row.year);
                     annualTotals.set(year, (annualTotals.get(year) || 0) + dashboardNumber(row.sales));
                 });
-                const salesPerYear = Array.from(annualTotals, ([year, total]) => ({ year, total }))
+                const salesPerYear = Array.from(annualTotals, ([year, total]) => ({year, total}))
                     .sort((a, b) => a.year - b.year);
 
                 const currentYearRows = rows.filter(r => r.year === currentYear);
@@ -1533,7 +1552,7 @@ import {initializeApp} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-
                     };
                 });
 
-                const commonCurrencyTicks = { callback: value => dashboardUsdFormatter.format(value) };
+                const commonCurrencyTicks = {callback: value => dashboardUsdFormatter.format(value)};
 
                 salesBarChart = new Chart(salesCanvas.getContext('2d'), {
                     type: 'bar',
@@ -1562,8 +1581,8 @@ import {initializeApp} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-
                         labels: dashboardMonthNames,
                         datasets: [{
                             label: 'Sales', data: monthRows.map(r => r.sales),
-                            backgroundColor: ['#2563eb','#10b981','#facc15','#f97316','#8b5cf6','#ec4899',
-                                '#14b8a6','#6366f1','#a3e635','#fb7185','#0ea5e9','#c084fc']
+                            backgroundColor: ['#2563eb', '#10b981', '#facc15', '#f97316', '#8b5cf6', '#ec4899',
+                                '#14b8a6', '#6366f1', '#a3e635', '#fb7185', '#0ea5e9', '#c084fc']
                         }]
                     },
                     options: {
