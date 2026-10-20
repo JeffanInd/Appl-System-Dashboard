@@ -1409,7 +1409,7 @@ import {initializeApp} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-
                             statusEl.textContent = 'Belum ada data Dashboard. Silakan unggah data melalui menu khusus Dashboard setelah menu upload disiapkan.';
                         } else {
                             const years = [...new Set(rows.map(r => r.year))].sort((a, b) => a - b);
-                            statusEl.textContent = `Data Dashboard berhasil dimuat: ${rows.length} baris, tahun ${years.join(', ')}.`;
+                            statusEl.textContent = `Data dashboard loaded successfully: ${rows.length} line, year ${years.join(', ')}.`;
                         }
                     }
                 } catch (error) {
