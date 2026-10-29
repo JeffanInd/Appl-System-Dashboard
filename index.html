@@ -3,32 +3,113 @@
 
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
         <title>ERP Application System</title>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="./style.css">
     </head>
 
     <body>
-        <!-- LOGIN PAGE -->
+        <!-- LOGIN PAGE: desain luxury corporate, autentikasi tetap memakai Firebase -->
         <div id="loginPage">
-            <div class="login-box">
-                <img src="https://www.jeffan.com/secure/extensions/Intente/Jeffan_21_1_0/21.1.0/img/jeffan-logo.png"
-                    class="login-image">
-                <h1>International</h1>
-                <h2>ERP Application System</h2>
-                <input type="email" id="email" placeholder="Email" required>
-                <input type="password" id="password" placeholder="Password" required>
-                <button onclick="login()">Login</button>
-                <p class="login-help">
-                <h3>Update.Ver.05.X.2026</h3>
-                If you forgot your username and password, please contact us.
-                <a href="https://s.id/atrisna">admin</a>
-                </p>
+            <div class="login-layout">
+                <section class="login-brand-panel">
+                    <div class="login-brand-top">
+                        <img src="logo.png"
+                             class="login-brand-logo" alt="Logo Jeffan International Inc.">
+                        <div class="login-brand-name">
+                            JEFFAN INTERNATIONAL INC.
+                            <small>INTEGRATED BUSINESS SYSTEM</small>
+                        </div>
+                    </div>
+                    <div class="login-brand-content">
+                        <div class="login-eyebrow">CORPORATE PORTAL</div>
+                        <h1>Excellence in<br><span>Every Detail.</span></h1>
+                        <p>Satu akses untuk mendukung operasional, pengelolaan data, dan produktivitas perusahaan secara terintegrasi.</p>
+                    </div>
+                    <div class="login-brand-footer">
+                        <div class="login-brand-line"></div>
+                        SECURE ACCESS · CORPORATE MANAGEMENT
+                    </div>
+                </section>
+
+                <section class="login-form-panel">
+                    <div class="login-mobile-brand">
+                        <img src="logo.png"
+                             class="login-brand-logo" alt="Logo Jeffan International Inc.">
+                        <div class="login-brand-name">
+                            JEFFAN INTERNATIONAL INC.
+                            <small>INTEGRATED BUSINESS SYSTEM</small>
+                        </div>
+                    </div>
+                    <div class="login-form-heading">
+                        <div class="login-overline">WELCOME BACK</div>
+                        <h2>Sign In.</h2>
+                        <p>Masuk menggunakan akun perusahaan Anda.</p>
+                    </div>
+
+                    <div id="loginNotification" class="login-notification" role="alert" aria-live="polite"></div>
+
+                    <form id="loginForm" onsubmit="return false;" autocomplete="on">
+                        <div class="login-field">
+                            <label for="email">Username / Email</label>
+                            <div class="login-input-wrap">
+                                <span class="login-field-icon" aria-hidden="true">
+                                    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+                                        <circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/>
+                                    </svg>
+                                </span>
+                                <input type="email" id="email" name="email" placeholder="Masukkan email akun" autocomplete="username" autocapitalize="none" spellcheck="false" required>
+                            </div>
+                        </div>
+                        <div class="login-field">
+                            <label for="password">Password</label>
+                            <div class="login-input-wrap">
+                                <span class="login-field-icon" aria-hidden="true">
+                                    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+                                        <rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 1 1 8 0v3"/><path d="M12 14v3"/>
+                                    </svg>
+                                </span>
+                                <input type="password" id="password" name="password" placeholder="Masukkan password" autocomplete="current-password" required>
+                                <button type="button" id="toggleLoginPassword" class="login-toggle-password" aria-label="Tampilkan password" aria-pressed="false">
+                                    <svg id="loginEyeIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+                                        <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="login-options">
+                            <label class="login-remember"><input type="checkbox" id="rememberLoginUsername"> Ingat username</label>
+                            <span id="loginAttemptInfo">Maksimal 3 kali percobaan</span>
+                        </div>
+                        <button type="submit" class="login-submit" id="loginSubmitButton">
+                            <span id="loginButtonText">LOGIN</span>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                                <path d="M5 12h14M13 6l6 6-6 6"/>
+                            </svg>
+                        </button>
+                    </form>
+
+                    <div class="login-help">
+                        <span aria-hidden="true">🔒</span>
+                        <span>Area akses terbatas. Gunakan akun resmi perusahaan dan jangan membagikan kata sandi Anda. Lupa akses? Hubungi <a href="https://s.id/atrisna" target="_blank" rel="noopener">administrator</a>.</span>
+                    </div>
+                    <div class="login-footer">© <span id="loginCurrentYear"></span> Jeffan International Inc. · All Rights Reserved<br>Update.Ver.06.X.2026</div>
+                </section>
             </div>
         </div>
+
+        <section class="login-lock-screen" id="loginLockScreen" role="alertdialog" aria-modal="true" aria-labelledby="loginLockTitle" aria-describedby="loginLockDescription">
+            <div class="login-lock-card">
+                <div class="login-lock-symbol" aria-hidden="true">🔒</div>
+                <h2 id="loginLockTitle">Akses Dikunci</h2>
+                <p id="loginLockDescription">Percobaan login gagal sebanyak 3 kali. Sesi login ini dihentikan untuk melindungi akses aplikasi.</p>
+                <p class="login-lock-small">SECURITY PROTECTION ACTIVATED</p>
+            </div>
+        </section>
 
         <!-- ================= WELCOME OVERLAY ================= -->
         <div id="welcomeOverlay" class="welcome-overlay">
@@ -57,7 +138,7 @@
                     <img src="https://www.jeffan.com/secure/extensions/Intente/Jeffan_21_1_0/21.1.0/img/jeffan-logo.png"
                         class="sidebar-logo" alt="Logo Sidebar">
                     <h2>ERP Application System</h2>
-                    <h3>Update.Ver.05.X.2026</h3>
+                    <h3>Update.Ver.06.X.2026</h3>
 
                     <div id="clock-container">
                         <div id="clock-time">00:00:00</div>
@@ -89,14 +170,15 @@
 
             <div id="sidebarOverlay" class="sidebar-overlay" onclick="toggleMenu()" aria-hidden="true"></div>
             <main class="main">
-                <button type="button" class="mobile-menu-toggle" onclick="toggleMenu()" aria-label="Buka menu navigasi" aria-controls="sidebar" aria-expanded="false">
+                <button type="button" class="mobile-menu-toggle" onclick="toggleMenu()" aria-label="Buka menu navigasi"
+                    aria-controls="sidebar" aria-expanded="false">
                     ☰ Menu
                 </button>
                 <!-- Dashboard -->
                 <section id="dashboard">
                     <h3>Dashboard</h3>
-                    <p>Welcome to Jeffan International ERP Application System ( Data Last Update : Tuesday, 10:10
-                        AM_October 27,2026 )</p>
+                    <p>Welcome to Jeffan International ERP Application System ( Data Last Update : Wednesday, 14:00
+                        PM_October 28,2026 )</p>
                     <p id="dashboardDataStatus" role="status" style="margin:6px 0 14px;color:#64748b;font-size:13px;">
                         Memuat data Dashboard dari Firebase...</p>
                     <div class="kpi-container">
@@ -500,7 +582,7 @@
             src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-        <script type="module" src="script.js"></script>
+        <script type="module" src="./script.js"></script>
     </body>
 
 </html>
