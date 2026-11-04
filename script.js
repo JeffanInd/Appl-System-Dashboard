@@ -1740,8 +1740,8 @@ import {initializeApp} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-
             function updateLoginAttempts() {
                 const remaining = Math.max(0, LOGIN_MAX_ATTEMPTS - loginFailedAttempts);
                 loginAttemptInfo.textContent = remaining > 0
-                    ? `Sisa percobaan: ${remaining} kali`
-                    : "Akses telah dikunci";
+                    ? `Remaining attempts: ${remaining} X`
+                    : "Access has been locked";
             }
 
             function lockLoginApplication() {
